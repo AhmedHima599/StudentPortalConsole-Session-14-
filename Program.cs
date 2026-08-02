@@ -75,11 +75,11 @@ namespace StudentPortalConsole
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-          
+
             optionsBuilder.UseSqlServer(
                 "Server=.;Database=ITI_StudentPortal;Trusted_Connection=True;TrustServerCertificate=True;")
                 .LogTo(Console.WriteLine, LogLevel.Information)
-                .EnableSensitiveDataLogging(); 
+                .EnableSensitiveDataLogging();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -95,7 +95,7 @@ namespace StudentPortalConsole
                 .HasForeignKey(c => c.InstructorId)
                 .OnDelete(DeleteBehavior.SetNull);
         }
-
+    }
 
         internal class Program
         {
@@ -170,32 +170,32 @@ namespace StudentPortalConsole
 
                     Console.WriteLine("*************************** C.4 ***************************");
 
-                    //var newStudent = new Student
-                    //{
-                    //    FullName = "Ahmed Ebrahim",
-                    //    YearOfStudy = 2,
-                    //    Gpa = 3.5 // My Derived GPA
+                var newStudent = new Student
+                {
+                    FullName = "Ahmed Ebrahim",
+                    YearOfStudy = 2,
+                    Gpa = 3.5 // My Derived GPA
 
-                    //};
+                };
 
 
-                    //Console.WriteLine($"Student Id in C# before  Save: {newStudent.Id}");
-                    //await context.Students.AddAsync(newStudent);
-                    //await context.SaveChangesAsync();
-                    //Console.WriteLine($"Student Id in DB after Save: {newStudent.Id}");
-                    //Console.WriteLine("my Student Add");
-                    Console.WriteLine("*************************** C.5 ***************************");
+                Console.WriteLine($"Student Id in C# before  Save: {newStudent.Id}");
+                await context.Students.AddAsync(newStudent);
+                await context.SaveChangesAsync();
+                Console.WriteLine($"Student Id in DB after Save: {newStudent.Id}");
+                Console.WriteLine("my Student Add");
+                Console.WriteLine("*************************** C.5 ***************************");
 
-                    var myStudent = context.Students.FirstOrDefault(s => s.FullName == "Ahmed Ebrahim");
-                    //if (myStudent != null)
-                    //{
-                    //    myStudent.YearOfStudy = 3;
-                    //    Console.WriteLine($"Updated {myStudent.FullName}'s YearOfStudy is now: {myStudent.YearOfStudy}");
+                var myStudent = await context.Students
+                    .FirstOrDefaultAsync(s => s.FullName == "Ahmed Ebrahim"); if (myStudent != null)
+                    {
+                        myStudent.YearOfStudy = 3;
+                        Console.WriteLine($"Updated {myStudent.FullName}'s YearOfStudy is now: {myStudent.YearOfStudy}");
 
-                    //}
-                    //await context.SaveChangesAsync();
+                    }
+                    await context.SaveChangesAsync();
 
-                    //  I verfied it
+                    //I verfied it
                     Console.WriteLine("*************************** C.6 ***************************");
 
 
@@ -222,27 +222,29 @@ namespace StudentPortalConsole
                     // 4- 0 
 
                     Console.WriteLine("*************************** D.6 ***************************");
-                    //try
-                    //{
-                    //    Student student = new Student
-                    //    {
-                    //        FullName = null!,
-                    //        YearOfStudy = 2,
-                    //        Gpa = 3.5
-                    //    };
+                try
+                {
+                    Student student = new Student
+                    {
+                        FullName = null!,
+                        YearOfStudy = 2,
+                        Gpa = 3.5
+                    };
 
-                    //    context.Students.Add(student);
+                    context.Students.Add(student);
 
-                    //    await context.SaveChangesAsync();
-                    //}
-                    //catch (DbUpdateException ex)
-                    //{
-                    //    Console.WriteLine("Database rejected the NULL FullName.");
-                    //    Console.WriteLine(ex.Message);
-                    //    //An error occurred while saving the entity changes. See the inner exception for details.
-                    //}
+                    await context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    Console.WriteLine("Database rejected the NULL FullName.");
+                    Console.WriteLine(ex.Message);
+                    //An error occurred while saving the entity changes. See the inner exception for details.
 
-                    Console.WriteLine("===========================================================");
+                    context.ChangeTracker.Clear();
+                }
+
+                Console.WriteLine("===========================================================");
                     Console.WriteLine("======================== Part E ===========================");
                     Console.WriteLine("===========================================================");
                     Console.WriteLine("*************************** E.4 ***************************");
@@ -270,92 +272,105 @@ namespace StudentPortalConsole
                     }
 
                     Console.WriteLine("*************************** E.7 ***************************");
-                    //try {
-                    //    var exE7 = new Course {
-                    //        CourseName = "Ai And Machine Learning",
-                    //        Credits = 3,
-                    //        InstructorId = 999 };
+                    try
+                    {
+                        var exE7 = new Course
+                        {
+                            CourseName = "Ai And Machine Learning",
+                            Credits = 3,
+                            InstructorId = 999
+                        };
 
-                    //    await context.Courses.AddAsync(exE7);
-                    //    await context.SaveChangesAsync();
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    Console.WriteLine(ex.Message);
-                    //    //An error occurred while saving the entity changes. See the inner exception for details.
+                        await context.Courses.AddAsync(exE7);
+                        await context.SaveChangesAsync();
+                    }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    //An error occurred while saving the entity changes. See the inner exception for details.
 
-                    //}
+                    context.ChangeTracker.Clear();
+                }
 
 
-                    Console.WriteLine("===========================================================");
+                Console.WriteLine("===========================================================");
                     Console.WriteLine("======================== Part F ===========================");
                     Console.WriteLine("===========================================================");
                     Console.WriteLine("*************************** F.1 ***************************");
+                if (hamdy != null)
+                {
+                    bool exists = await context.Courses
+                        .AnyAsync(c => c.CourseName == "Flutter");
 
-                    //var extraCourses = new List<Course> { //  Adding 4 Courses
-                    //    new Course {
-                    //        CourseName = "Flutter",
-                    //        Credits=3,
-                    //        InstructorId=hamdy.Id
-                    //    },
-                    //    new Course
-                    //    {
-                    //        CourseName="Ai And Machine Learning",
-                    //        Credits=3,
-                    //        InstructorId=hamdy.Id
-                    //    },
-                    //    new Course
-                    //    {
-                    //        CourseName="Cyper",
-                    //        Credits=2,
-                    //        InstructorId=hamdy.Id
+                    if (!exists)
+                    {
+                        var extraCourses = new List<Course>
+                    {
+                        new Course
+                        {
+                            CourseName = "Flutter",
+                            Credits = 3,
+                            InstructorId = hamdy.Id
+                        },
+                        new Course
+                        {
+                            CourseName = "Ai And Machine Learning",
+                            Credits = 3,
+                            InstructorId = hamdy.Id
+                        },
+                        new Course
+                        {
+                            CourseName = "Cyber",
+                            Credits = 2,
+                            InstructorId = hamdy.Id
+                        },
+                        new Course
+                        {
+                            CourseName = "C# Advanced",
+                            Credits = 2,
+                            InstructorId = hamdy.Id
+                        }
+                    };
 
-                    //    },
-                    //    new Course
-                    //    {
-                    //        CourseName ="C# Advanced",
-                    //        Credits=2,
-                    //        InstructorId=hamdy.Id
-                    //    }
-                    //};
-
-                    //await context.Courses.AddRangeAsync(extraCourses);
-                    //await context.SaveChangesAsync();
+                        await context.Courses.AddRangeAsync(extraCourses);
+                        await context.SaveChangesAsync();
+                    }
+                }
 
 
 
-                    Console.WriteLine("*************************** F.3 ***************************");
+                Console.WriteLine("*************************** F.3 ***************************");
 
-                    //using (var context1 = new StudentPortalContext())
-                    //{
-                    //    var instructors = await context1.Instructors.ToListAsync();
+                using (var context1 = new StudentPortalContext())
+                {
+                    var instructors = await context1.Instructors.ToListAsync();
 
-                    //    foreach (var instructor in instructors)
-                    //    {
-                    //        Console.WriteLine($"{instructor.FullName} : {instructor.Courses.Count}");
-                    //    }
-                    //}
-                    // 1 Query
+                    foreach (var instructor in instructors)
+                    {
+                        Console.WriteLine($"{instructor.FullName} : {instructor.Courses.Count}");
+                    }
+                }
+                //1 Query
 
                     Console.WriteLine("*************************** F.4 ***************************");
 
-                    //using (var context1 = new StudentPortalContext())
-                    //{
-                    //    var instructors = await context1.Instructors
-                    //        .Include(i => i.Courses)
-                    //        .ToListAsync();
+                using (var context1 = new StudentPortalContext())
+                {
+                    var instructors = await context1.Instructors
+                        .Include(i => i.Courses)
+                        .ToListAsync();
 
-                    //    foreach (var instructor in instructors)
-                    //    {
-                    //        Console.WriteLine(instructor.FullName);
+                    foreach (var instructor in instructors)
+                    {
+                        Console.WriteLine(instructor.FullName);
 
-                    //        foreach (var course in instructor.Courses)
-                    //        {
-                    //            Console.WriteLine($"   {course.CourseName}");
-                    //        }
-                    //    }
-                    //}
-                    // 1 Query
+                        foreach (var course in instructor.Courses)
+                        {
+                            Console.WriteLine($"   {course.CourseName}");
+                        }
+                    }
+                }
+                //1 Query
 
 
                     Console.WriteLine("*************************** F.5 ***************************");
@@ -365,25 +380,25 @@ namespace StudentPortalConsole
 
                     Console.WriteLine("*************************** F.6 ***************************");
 
-                    //using (var context1 = new StudentPortalContext())
-                    //{
-                    //    var instructor = await context1.Instructors
-                    //        .FirstAsync(i => i.FullName == "Hamdy");
+                using (var context1 = new StudentPortalContext())
+                {
+                    var instructor = await context1.Instructors
+                        .FirstAsync(i => i.FullName == "Hamdy");
 
-                    //    Console.WriteLine($"Before explicit loading: {instructor.Courses.Count}");
+                    Console.WriteLine($"Before explicit loading: {instructor.Courses.Count}");
 
-                    //    await context.Entry(instructor)
-                    //        .Collection(i => i.Courses)
-                    //        .LoadAsync();
+                    await context1.Entry(instructor)
+                        .Collection(i => i.Courses)
+                        .LoadAsync();
 
-                    //    Console.WriteLine($"After explicit loading: {instructor.Courses.Count}");
-                    //}
-                    // Before loading = 0
-                    // After loading = 5
-                    // 1 query for instructor.
-                    // 1 query for Courses collection explicitly.
+                    Console.WriteLine($"After explicit loading: {instructor.Courses.Count}");
+                }
+                // Before loading = 0
+                // After loading = 5
+                // 1 query for instructor.
+                // 1 query for Courses collection explicitly.
 
-                    Console.WriteLine("*************************** F.7 ***************************");
+                Console.WriteLine("*************************** F.7 ***************************");
 
                     var exF7 = await context.Students
                                     .AsNoTracking()
@@ -420,12 +435,11 @@ namespace StudentPortalConsole
 
 
 
-                Console.WriteLine();
+                     Console.WriteLine();
                     Console.WriteLine("Done.");
                 
             }
         }
 
-
-    }
+    
 }
